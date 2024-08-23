@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -37,13 +37,20 @@ class AuthController extends Controller
 
         $validator = Validator::make($request->only('email', 'password'), [
             'email' => 'required|string|email',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string',
         ]);
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-        $user = User::where('email', $request->email)->firstOrFail();
-
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json(['email' => 'No account found with this email'], 422);
+            // return redirect()->back()->withErrors(['email' => 'No account found with this email'])->withInput();
+        }
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Invalid login credentials'], 422);
+            // return redirect()->back()->withErrors(['password' => 'Invalid login credentials'])->withInput();
+        }
         $token = $user->createToken('auth_token')->plainTextToken;
         //sending user if optional i may delete it
         return response()->json(['access_token' => $token,'user' => $user, 'token_type' => 'Bearer']);
