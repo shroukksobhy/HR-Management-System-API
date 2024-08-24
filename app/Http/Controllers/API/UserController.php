@@ -11,6 +11,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
+        // to show user's data
         return $request->user();
 
     }

@@ -17,7 +17,7 @@ return new class () extends Migration {
             $table->string('empID');
             $table->string('gender');
             $table->string('status')-> nullable();
-            $table->string('phone')-> nullable();
+            $table->bigInteger('phone')->unsigned();
             $table->string('manager')-> nullable();
             $table->date('dateOfBirth')-> nullable();
             $table->string('address')-> nullable();
