@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -29,6 +30,18 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             "role" => $request->role
         ]);
+        try {
+            $user->profile()->create([
+                'bio' => 'THIS IS BIO',
+                'manager' => 'THIS IS HIS MANAGER',
+                'position' => 'THIS IS POSITION',
+                'empID' => 'THIS IS empID',
+                'gender' => 'THIS IS gender',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Profile creation failed: ' . $e->getMessage());
+            // Optionally, you can return a response or throw a custom exception
+        }
         //        print($user);
         $token = $user->createToken('auth_token')->plainTextToken;
 
