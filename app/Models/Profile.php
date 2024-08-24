@@ -16,7 +16,8 @@ class Profile extends Model
         'dataOfBirth',
         'position',
         'empID',
-        'gender'
+        'gender',
+        'phone'
     ];
 
 
