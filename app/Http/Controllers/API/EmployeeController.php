@@ -18,7 +18,7 @@ class EmployeeController extends Controller
     public function index()
     {
         //SHOW ALL THE employees -> if the requester is admin (token)
-        $employees = User::where('role', 'employee')->get();
+        $employees = User::where('role', 'employee')->with('profile')->get();
         return response()->json($employees);
     }
 
@@ -40,7 +40,6 @@ class EmployeeController extends Controller
         // if ($validator->fails()) {
         //     return response()->json($validator->errors(), 422);
         // }
-        echo "this done";
         DB::beginTransaction();
         try {
             $user = User::create([
