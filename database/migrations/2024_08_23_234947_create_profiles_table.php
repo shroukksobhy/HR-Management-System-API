@@ -21,6 +21,11 @@ return new class () extends Migration {
             $table->string('manager')-> nullable();
             $table->date('dateOfBirth')-> nullable();
             $table->string('address')-> nullable();
+            $table->string('country')-> nullable();
+            $table->string('city')-> nullable();
+            $table->string('job_title')-> nullable();
+            $table->string('empolyement_status')-> nullable();
+            $table->string('department')-> nullable();
             $table->string('bio')->nullable();
             // $table->string('image')->nullable();
             $table->timestamps();

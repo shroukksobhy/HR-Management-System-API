@@ -17,10 +17,18 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        //SHOW ALL THE employees -> if the requester is admin (token)
+        // Show all the employees if the requester is admin (token)
         $employees = User::where('role', 'employee')->with('profile')->get();
-        return response()->json($employees);
+        return response()->json($employees->map(function ($employee) {
+            return [
+                'id' => $employee->id,
+                'name' => $employee->name,
+                'email' => $employee->email,
+                'profile' => $employee->profile,
+            ];
+        }));
     }
+    
 
     /**
      * Store a newly created resource in storage.
@@ -37,9 +45,6 @@ class EmployeeController extends Controller
             'phone' => 'required|numeric|digits_between:10,15',
             'manager' => 'required|string',
         ]);
-        // if ($validator->fails()) {
-        //     return response()->json($validator->errors(), 422);
-        // }
         DB::beginTransaction();
         try {
             $user = User::create([
@@ -72,8 +77,12 @@ class EmployeeController extends Controller
      */
     public function show(string $id)
     {
-        //        return Employee::findOrFail($id);
-
+        try {
+            $employee = User::with('profile')->where('role', 'employee')->findOrFail($id);
+            return response()->json($employee);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Employee not found'], 404);
+        }
     }
 
     /**
@@ -81,9 +90,40 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //$employee = Employee::findOrFail($id);
-        // $employee->update($request->all());
-        // return response()->json($employee, 200);
+    $validator = Validator::make($request->all(), [
+        'name' => 'sometimes|required|string|max:255',
+        'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $id,
+        'password' => 'sometimes|required|string|min:8',
+        'position' => 'sometimes|required|string',
+        'gender' => 'sometimes|required|string',
+        'phone' => 'sometimes|required|numeric|digits_between:10,15',
+        'manager' => 'sometimes|required|string',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
+    }
+
+    DB::beginTransaction();
+    try {
+        $user = User::findOrFail($id);
+        $user->update($request->only(['name', 'email', 'password']));
+        if ($request->has('password')) {
+            $user->password = bcrypt($request->password);
+        }
+        $user->save();
+
+        $profile = $user->profile;
+        $profile->update($request->only(['address', 'phone', 'position', 'gender', 'manager']));
+        $profile->save();
+
+        DB::commit();
+        return response()->json(['user' => $user, 'profile' => $profile], 200);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json(['error' => 'User and profile update failed', 'message' => $e->getMessage()], 500);
+    }
+
     }
 
     /**
@@ -91,9 +131,12 @@ class EmployeeController extends Controller
      */
     public function destroy(string $id)
     {
-        // //
-        // $employee = Employee::findOrFail($id);
-        // $employee->update($request->all());
-        // return response()->json($employee, 200);
+        try {
+            $employee = User::findOrFail($id);
+            $employee->delete();
+            return response()->json(['message' => 'Employee deleted'], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Employee not found'], 404);
+        }
     }
 }
