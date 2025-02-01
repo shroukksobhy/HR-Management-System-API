@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\EmployeeController;
 use App\Http\Controllers\API\AttendanceController;
+use App\Http\Controllers\API\LeaveRequestController;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
