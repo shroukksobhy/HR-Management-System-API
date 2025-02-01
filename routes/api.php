@@ -5,6 +5,7 @@ use App\Http\Controllers\API\AuthController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\EmployeeController;
+use App\Http\Controllers\API\AttendanceController;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
@@ -20,3 +21,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 });
 
 Route::apiResource('employees', EmployeeController::class);
+
+Route::post('attendance/clock-in', [AttendanceController::class, 'clockIn']);
+Route::post('attendance/clock-out', [AttendanceController::class, 'clockOut']);
+Route::get('attendance/{employeeId}', [AttendanceController::class, 'getAttendanceByEmpolyeeId']);
+Route::get('attendance-all', [AttendanceController::class, 'getAllAttendance']);
+
+Route::post('leave_request', [LeaveRequestController::class, 'store']);
