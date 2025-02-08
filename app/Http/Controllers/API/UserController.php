@@ -11,8 +11,8 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        // to show user's data
-        return $request->user();
-
+        // Retrieve and return a list of users and their profiles
+        $users = User::with('profile')->get();
+        return response()->json($users);
     }
 }

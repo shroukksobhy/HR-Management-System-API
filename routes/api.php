@@ -7,6 +7,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\EmployeeController;
 use App\Http\Controllers\API\AttendanceController;
 use App\Http\Controllers\API\LeaveRequestController;
+use App\Http\Controllers\API\JobsController;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
@@ -29,3 +30,5 @@ Route::get('attendance/{employeeId}', [AttendanceController::class, 'getAttendan
 Route::get('attendance-all', [AttendanceController::class, 'getAllAttendance']);
 
 Route::post('leave_request', [LeaveRequestController::class, 'store']);
+
+Route::apiResource('jobs', JobsController::class);
