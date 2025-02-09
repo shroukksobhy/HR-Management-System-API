@@ -93,7 +93,8 @@ class EmployeeController extends Controller
     {
     $validator = Validator::make($request->all(), [
         'name' => 'sometimes|required|string|max:255',
-        'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $id,
+        'email_company' => 'sometimes|required|string|email|max:255|unique:users,email,' . $id,
+        'email_personal' => 'sometimes|required|string|email|max:255,' . $id,
         'password' => 'sometimes|required|string|min:8',
         'position' => 'sometimes|required|string',
         'gender' => 'sometimes|required|string',
