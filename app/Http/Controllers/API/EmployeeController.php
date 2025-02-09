@@ -23,7 +23,7 @@ class EmployeeController extends Controller
             return [
                 'id' => $employee->id,
                 'name' => $employee->name,
-                'email' => $employee->email,
+                'email' => $employee->email_company,
                 'profile' => $employee->profile,
             ];
         }));
@@ -37,7 +37,8 @@ class EmployeeController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email_company' => 'required|string|email|max:255|unique:users',
+            'email_personal' => 'string|email|max:255',
             'password' => 'required|string|min:8',
             "role" => 'required|string',
             "position" => 'required|string',
@@ -49,7 +50,7 @@ class EmployeeController extends Controller
         try {
             $user = User::create([
                 'name' => $request->name,
-                'email' => $request->email,
+                'email_company' => $request->email_company,
                 'password' => bcrypt($request->password),
                 'role' => 'employee',
             ]);
