@@ -109,7 +109,7 @@ class EmployeeController extends Controller
     DB::beginTransaction();
     try {
         $user = User::findOrFail($id);
-        $user->update($request->only(['name', 'email', 'password']));
+        $user->update($request->only(['name', 'email_company', 'password']));
         if ($request->has('password')) {
             $user->password = bcrypt($request->password);
         }
