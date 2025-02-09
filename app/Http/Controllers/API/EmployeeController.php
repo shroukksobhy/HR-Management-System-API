@@ -45,6 +45,7 @@ class EmployeeController extends Controller
             "gender" => 'required|string',
             'phone' => 'required|numeric|digits_between:10,15',
             'manager' => 'required|string',
+            'address' => 'required|string|max:255',
         ]);
         DB::beginTransaction();
         try {
@@ -62,7 +63,7 @@ class EmployeeController extends Controller
               'position' => $request->position,
               "empID" => Str::random(10),
               "gender" => $request->gender,
-              "manager" => "THIS IS HIS MANAGER"
+              "manager" => $request->manager,
             ]);
 
             DB::commit();
@@ -100,6 +101,7 @@ class EmployeeController extends Controller
         'gender' => 'sometimes|required|string',
         'phone' => 'sometimes|required|numeric|digits_between:10,15',
         'manager' => 'sometimes|required|string',
+        'address' => 'sometimes|required|string|max:255',
     ]);
 
     if ($validator->fails()) {
